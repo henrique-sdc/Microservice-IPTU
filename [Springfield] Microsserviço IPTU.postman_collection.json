@@ -1,0 +1,530 @@
+{
+  "info": {
+    "_postman_id": "aa5c6c08-397a-4ee4-beeb-1473ec735468",
+    "name": "[Springfield] Serviços Cidadão e IPTU",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42347883",
+    "description": "Coleção para testar os microsserviços de IPTU (Porta 8081) e Solicitações (Porta 8080)"
+  },
+  "item": [
+    {
+      "name": "[Springfield] Microsserviço IPTU (Porta 8081)",
+      "description": "Testes para o serviço de gerenciamento de IPTU",
+      "item": [
+        {
+          "name": "1. Geração de IPTU",
+          "item": [
+            {
+              "name": "1.1 Gerar IPTU - Parcelado (Sucesso)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"cidadaoId\": 10001,\r\n  \"ano\": 2025, \r\n  \"tipoPagamento\": \"PARCELADO\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8081/iptu/gerar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "gerar"]
+                },
+                "description": "Gera IPTU parcelado para um ano ainda não existente. Espera 201."
+              },
+              "response": []
+            },
+            {
+              "name": "1.2 Gerar IPTU - Pagamento Único (Sucesso)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"cidadaoId\": 10002,\r\n  \"ano\": 2025, \r\n  \"tipoPagamento\": \"UNICO\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8081/iptu/gerar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "gerar"]
+                },
+                "description": "Gera IPTU como pagamento único. Espera 201."
+              },
+              "response": []
+            },
+            {
+              "name": "1.3 Gerar IPTU - Já Existente (Erro)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"cidadaoId\": 10001,\r\n  \"ano\": 2025, \r\n  \"tipoPagamento\": \"PARCELADO\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8081/iptu/gerar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "gerar"]
+                },
+                "description": "Tenta gerar IPTU para um cidadão/ano que já existe. Espera 400."
+              },
+              "response": []
+            },
+            {
+              "name": "1.4 Gerar IPTU - Cidadão Inexistente (Erro)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"cidadaoId\": 99999,\r\n  \"ano\": 2025,\r\n  \"tipoPagamento\": \"PARCELADO\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8081/iptu/gerar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "gerar"]
+                },
+                "description": "Tenta gerar IPTU para um ID de cidadão inválido. Espera 400 (erro vindo do Feign Client)."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "2. Consulta de Situação IPTU",
+          "item": [
+            {
+              "name": "2.1 Consultar Situação - Parcelado (Não Pago)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10001/2024/situacao",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10001", "2024", "situacao"]
+                },
+                "description": "Consulta situação de IPTU parcelado sem pagamentos. Espera 200."
+              },
+              "response": []
+            },
+            {
+              "name": "2.2 Consultar Situação - Único (Não Pago)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10002/2024/situacao",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10002", "2024", "situacao"]
+                },
+                "description": "Consulta situação de IPTU único sem pagamento. Espera 200."
+              },
+              "response": []
+            },
+            {
+              "name": "2.3 Consultar Situação - Parcialmente Pago",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10003/2023/situacao",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10003", "2023", "situacao"]
+                },
+                "description": "Consulta situação de IPTU parcelado com alguns pagamentos. Espera 200."
+              },
+              "response": []
+            },
+            {
+              "name": "2.4 Consultar Situação - Totalmente Pago (Único)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10004/2024/situacao",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10004", "2024", "situacao"]
+                },
+                "description": "Consulta situação de IPTU único já quitado. Espera 200."
+              },
+              "response": []
+            },
+            {
+              "name": "2.5 Consultar Situação - IPTU Inexistente (Erro)",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10001/1990/situacao",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10001", "1990", "situacao"]
+                },
+                "description": "Consulta situação para um ano/cidadão sem IPTU gerado. Espera 404."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "3. Pagamento de Parcela",
+          "item": [
+            {
+              "name": "3.1 Pagar Parcela - Sucesso",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10001/2024/parcela/1/pagar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10001", "2024", "parcela", "1", "pagar"]
+                },
+                "description": "Registra o pagamento de uma parcela existente e não paga. Espera 200."
+              },
+              "response": []
+            },
+            {
+              "name": "3.2 Pagar Parcela - Já Paga (Erro)",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10001/2024/parcela/1/pagar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10001", "2024", "parcela", "1", "pagar"]
+                },
+                "description": "Tenta pagar uma parcela que já foi paga. Espera 409 (Conflict) ou 400."
+              },
+              "response": []
+            },
+            {
+              "name": "3.3 Pagar Parcela - Parcela Inexistente (Erro)",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10001/2024/parcela/13/pagar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10001", "2024", "parcela", "13", "pagar"]
+                },
+                "description": "Tenta pagar uma parcela com número inválido. Espera 404."
+              },
+              "response": []
+            },
+            {
+              "name": "3.4 Pagar Parcela - IPTU Inexistente (Erro)",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8081/iptu/10001/1990/parcela/1/pagar",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "8081",
+                  "path": ["iptu", "10001", "1990", "parcela", "1", "pagar"]
+                },
+                "description": "Tenta pagar parcela de um IPTU que não existe. Espera 404."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "[Springfield] Solicitações Cidadão (Porta 8080)",
+      "description": "Testes para o gerenciamento de solicitações com State Machine",
+      "item": [
+        {
+          "name": "4.1 Iniciar Nova Solicitação (Sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"cidadaoId\": \"10001\",\r\n  \"descricao\": \"Solicitação de poda de árvore na Rua das Flores\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes"]
+            },
+            "description": "Cria uma nova solicitação. Espera 201 e retorna demandaId. **Guarde o demandaId para os próximos testes!**"
+          },
+          "response": []
+        },
+        {
+          "name": "4.2 Iniciar Nova Solicitação (Cidadão Inválido - Erro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"cidadaoId\": \"99999\",\r\n  \"descricao\": \"Teste com cidadão inválido\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes"]
+            },
+            "description": "Tenta criar solicitação para cidadão inexistente. Espera 400."
+          },
+          "response": []
+        },
+        {
+          "name": "4.3 Processar Evento ANALISAR (Sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"evento\": \"ANALISAR\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes/{{demandaId}}/eventos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes", "{{demandaId}}", "eventos"],
+              "variable": [
+                {
+                  "key": "demandaId",
+                  "value": "COLOQUE_O_UUID_AQUI",
+                  "description": "Substitua pelo UUID retornado no teste 4.1"
+                }
+              ]
+            },
+            "description": "Envia o evento ANALISAR para a demanda criada. Espera 200 e novo estado AGUARDANDO_ANALISE. **NECESSITA DA VARIÁVEL {{demandaId}}**"
+          },
+          "response": []
+        },
+        {
+          "name": "4.4 Processar Evento ANALISAR (Inválido - Erro)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"evento\": \"ANALISAR\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes/{{demandaId}}/eventos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes", "{{demandaId}}", "eventos"],
+              "variable": [
+                {
+                  "key": "demandaId",
+                  "value": "COLOQUE_O_UUID_AQUI",
+                  "description": "Substitua pelo UUID retornado no teste 4.1"
+                }
+              ]
+            },
+            "description": "Tenta enviar ANALISAR novamente quando já está em AGUARDANDO_ANALISE. Espera 400. **NECESSITA DA VARIÁVEL {{demandaId}}**"
+          },
+          "response": []
+        },
+        {
+          "name": "4.5 Processar Evento CONCLUIR (Sucesso)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"evento\": \"CONCLUIR\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes/{{demandaId}}/eventos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes", "{{demandaId}}", "eventos"],
+              "variable": [
+                {
+                  "key": "demandaId",
+                  "value": "COLOQUE_O_UUID_AQUI",
+                  "description": "Substitua pelo UUID retornado no teste 4.1"
+                }
+              ]
+            },
+            "description": "Envia o evento CONCLUIR para a demanda. Espera 200 e novo estado CONCLUIDO. **NECESSITA DA VARIÁVEL {{demandaId}}**"
+          },
+          "response": []
+        },
+        {
+          "name": "4.6 Buscar Histórico do Cidadão (Sucesso)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes/cidadao/10001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes", "cidadao", "10001"]
+            },
+            "description": "Busca todos os registros de histórico para o cidadão 10001. Espera 200 e uma lista com 3 itens (se executou 4.1, 4.3, 4.5)."
+          },
+          "response": []
+        },
+        {
+          "name": "4.7 Buscar Histórico do Cidadão (Sem Solicitações)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes/cidadao/10005",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes", "cidadao", "10005"]
+            },
+            "description": "Busca histórico para um cidadão que existe mas não tem solicitações. Espera 200 e lista vazia []."
+          },
+          "response": []
+        },
+        {
+          "name": "4.8 Buscar Histórico do Cidadão (Inválido - Erro)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/solicitacoes/cidadao/99999",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["solicitacoes", "cidadao", "99999"]
+            },
+            "description": "Busca histórico para um cidadão inexistente. Espera 404."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
