@@ -44,8 +44,8 @@ Antes de executar este serviço, instale/tenha:
 iptu-service/
 ├── src/
 │ ├── main/
-│ │ ├── java/com/springfield/iptu/
-│ │ │ ├── client/ # Clientes Feign (CidadaoClient)
+│ │ ├── java/com/springfield/iptu_service/
+│ │ │ ├── config/ # Configurações (Ex: Feign)
 │ │ │ ├── controller/ # Endpoints REST (IptuController)
 │ │ │ ├── dto/ # Data Transfer Objects
 │ │ │ ├── model/ # Entidades JPA (IptuAnual, ParcelaIPTU)
@@ -55,8 +55,8 @@ iptu-service/
 │ │ ├── resources/
 │ │ │ └── application.properties # Configurações específicas do IPTU
 │ └── test/ # Testes de Integração com Feign
-│ ├── java/com/springfield/iptu/
-│ │ ├── client/ # Cliente Feign para os testes
+│ ├── java/com/springfield/iptu_service/
+│ │ ├── client/ # Cliente Feign para os testes (IptuApiTestClient)
 │ │ └── service/ # Classe de teste (IptuControllerFeignTest)
 └── pom.xml # Configuração do Maven para este serviço
 └── README.md # Este arquivo
